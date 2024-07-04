@@ -1,7 +1,7 @@
 Room Partitions
 ====
 
-We define a number of quads(tiles) which get arranged as an grid and parented to a chunk.
+We define a number of quads(tiles) which get arranged as a grid and parented to a chunk.
 Create random partitions inside the chunk until no more space is left.
 
 - Random colors for visibility
