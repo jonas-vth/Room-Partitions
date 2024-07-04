@@ -32,7 +32,7 @@ public class RoomPartitions : MonoBehaviour
     }
     void Generate_Chunk()
     {
-        if (room_count_old > 0) { Reset(); }
+        if (room_count_old > 0) { ResetChunk(); }
 
         int tile_count = CHUNK_SIZE_X * CHUNK_SIZE_Y;
         //Generate partitions until no more tiles are left.
@@ -87,9 +87,9 @@ public class RoomPartitions : MonoBehaviour
         //Partition complete.
         if (Input.GetKeyDown(KeyCode.P) || BUILD_PARTITIONS_KEYCODE_P) { Generate_Chunk(); BUILD_PARTITIONS_KEYCODE_P = false; }
         //Reset chunk.
-        if (Input.GetKeyDown(KeyCode.R) || RESET_KEYCODE_R) { Reset(); RESET_KEYCODE_R = false; }
+        if (Input.GetKeyDown(KeyCode.R) || RESET_KEYCODE_R) { ResetChunk(); RESET_KEYCODE_R = false; }
     }
-    private void Reset()
+    private void ResetChunk()
     {
         y_stock = 0;
         for (int i = 0; i < row.Length; i++)
