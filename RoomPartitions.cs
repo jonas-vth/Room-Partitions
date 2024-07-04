@@ -9,7 +9,7 @@ public class RoomPartitions : MonoBehaviour
     int CHUNK_SIZE_X, CHUNK_SIZE_Y;
 
     [Range(0.1f, 1f)]
-    public float max_segment_size = 0.5f;
+    public float division_amount = 0.1f;
 
     [Header("Controlls for testing")]
     public bool ADD_PARTITION_KEYCODE_SPACE;
@@ -47,7 +47,7 @@ public class RoomPartitions : MonoBehaviour
     {
         GameObject room;
         MaterialPropertyBlock propertyBlock;
-        //Only instantiate new objects if we generate more rooms then last time!
+        //Only instantiate new objects if we generate more rooms than last time!
         if (room_count_old <= room_index)
         {
             //New room as new Object.
@@ -84,9 +84,9 @@ public class RoomPartitions : MonoBehaviour
         //Controlls for testing...
         //Partition step.
         if (Input.GetKeyDown(KeyCode.Space) || ADD_PARTITION_KEYCODE_SPACE) { Generate_Room_Partition(); ADD_PARTITION_KEYCODE_SPACE = false; }
-        //Partition loop + Reset.
+        //Partition complete.
         if (Input.GetKeyDown(KeyCode.P) || BUILD_PARTITIONS_KEYCODE_P) { Generate_Chunk(); BUILD_PARTITIONS_KEYCODE_P = false; }
-        //Reset
+        //Reset chunk.
         if (Input.GetKeyDown(KeyCode.R) || RESET_KEYCODE_R) { Reset(); RESET_KEYCODE_R = false; }
     }
     private void Reset()
@@ -150,22 +150,22 @@ public class RoomPartitions : MonoBehaviour
         int max_range_y = CHUNK_SIZE_Y + 1;
 
         //Max % size ( x, y) of partitions relative to chunk size.
-        int max_segment_y = Mathf.FloorToInt(max_segment_size * max_amount_y);
-        int max_segment_x = Mathf.FloorToInt(max_segment_size * max_amount_x);
+        int max_segment_y = Mathf.FloorToInt(division_amount * max_amount_y);
+        int max_segment_x = Mathf.FloorToInt(division_amount * max_amount_x);
 
         //Partition start.
         int tile_counting = 0;
         if (tile_stock < tile_count)
         {
             //Define Y range
-            int Y_LIMIT = max_amount_y / max_segment_y;
+            int Y_LIMIT = max_segment_y;
             int y_range = Random.Range(1, max_range_y - Y_LIMIT);
             //Clamp the Y range relative to how much space is left.
             int sum_y = y_range + y_stock;
             if (sum_y > max_amount_y) { y_range -= (sum_y - max_amount_y); }
 
             //Define X range
-            int X_LIMIT = max_amount_x / max_segment_x;
+            int X_LIMIT = max_segment_x;
             int x_range = Random.Range(3, max_range_x - X_LIMIT);
 
             //Check spaces.
@@ -199,7 +199,7 @@ public class RoomPartitions : MonoBehaviour
                 }
             }
 
-            //New partition created.
+            //New partition created. (We listed tiles.)
             if (tile_counting > 0)
             {
                 New_Partition(tile_list);
@@ -211,14 +211,15 @@ public class RoomPartitions : MonoBehaviour
             //Column Limit is reached. Reset Y offset(y_stock).
             if (y_stock >= max_amount_y)
             {
-                Debug.Log("Column limit reached!");
+                //Debug.Log("Column limit reached!");
                 y_stock = 0;
 
-                //Check for next possible space for the next iteration.
+                //Check for next possible column space for the next iteration.
                 for (int i = 0; i < row.Length; i++)
                 {
                     if (row[i] < max_amount_x)
                     {
+                        //Debug.Log("Column start at: " + i);
                         y_stock = i;
                         break;
                     }
@@ -230,6 +231,5 @@ public class RoomPartitions : MonoBehaviour
             //No more tiles are left.
             Debug.Log("Chunk is done!");
         }
-
     }
 }
